@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
       .join("\n");
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-001"
+      model: "gemini-2.5-flash"
     });
 
     const result = await model.generateContent({
