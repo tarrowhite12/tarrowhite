@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aether — AI Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-mark">⬡</span>
+        <span class="logo-text">Aether</span>
+      </div>
+      <button class="icon-btn" id="sidebarToggle" title="Close sidebar">&#8592;</button>
+    </div>
+
+    <button class="new-chat-btn" id="newChatBtn">
+      <span class="btn-icon">+</span> New Chat
+    </button>
+
+    <nav class="chat-history" id="chatHistory">
+      <!-- Dynamically populated -->
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">☀</span>
+        <span id="themeLabel">Light mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────── -->
+  <main class="main" id="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="icon-btn" id="sidebarOpen" title="Open sidebar">☰</button>
+      <span class="model-badge">gpt-4o-mini</span>
+      <button class="icon-btn danger" id="clearBtn" title="Clear chat">⊘</button>
+    </header>
+
+    <!-- Chat messages -->
+    <section class="chat-area" id="chatArea">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">⬡</div>
+        <h1>Good to see you.</h1>
+        <p>Ask me anything — code, ideas, analysis, or just a chat.</p>
+        <div class="suggestion-pills">
+          <button class="pill" data-text="Explain quantum entanglement simply">Explain quantum entanglement</button>
+          <button class="pill" data-text="Write a Python function to flatten a nested list">Flatten a nested list in Python</button>
+          <button class="pill" data-text="Give me 5 creative startup ideas for 2025">Startup ideas for 2025</button>
+          <button class="pill" data-text="What are the key differences between React and Vue?">React vs Vue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Input area -->
+    <footer class="input-area">
+      <div class="input-box">
+        <textarea
+          id="userInput"
+          placeholder="Message Aether…"
+          rows="1"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" title="Send (Enter)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <p class="disclaimer">AI can make mistakes. Verify important information.</p>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
