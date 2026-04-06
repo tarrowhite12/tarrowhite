@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 3000;
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // serve frontend
+app.use(express.static(__dirname));// serve frontend
 
 // ── API Routes ────────────────────────────────────────────────────────────────
 app.use("/api/chat", chatRouter);
