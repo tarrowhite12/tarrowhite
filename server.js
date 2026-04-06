@@ -8,7 +8,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-const chatRouter = require("./src/routes/chat");
+const chatRouter = require("./chat");
 // Future routers — uncomment when ready:
 // const imageRouter  = require("./src/routes/image");
 // const searchRouter = require("./src/routes/search");
