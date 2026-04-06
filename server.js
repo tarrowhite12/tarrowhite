@@ -39,5 +39,4 @@ app.get("*", (_req, res) =>
 // ── Start ─────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`\n🚀  Server running → http://localhost:${PORT}`);
-  console.log(`   API key loaded: ${process.env.OPENAI_API_KEY ? "✅" : "❌  (set OPENAI_API_KEY in .env)"}\n`);
-});
+  console.log(`   GEMINI API loaded: ${process.env.GEMINI_API_KEY ? "✅" : "❌  (set GEMINI_API_KEY in .env)"}\n`); 
