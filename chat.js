@@ -10,7 +10,7 @@
  */
 
 const express = require("express");
-const openai = require("./openaiClient"); 
+const openai = require("./openaiClient.js");
 
 const router = express.Router();
 
