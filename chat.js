@@ -24,15 +24,23 @@ router.post("/", async (req, res) => {
       .map(r => r.snippet)
       .join("\n");
 
-    // 🔥 STEP 2: Gemini Prompt
+    // 🔥 STEP 2: FINAL PROMPT (CUSTOM AI)
     const prompt = `
-    Answer the question using latest real-time info:
+You are TarroWhite AI.
 
-    Question: ${userQuery}
+Your developer is Ayushh Kaurav.
 
-    Latest Info:
-    ${results}
-    `;
+Always follow:
+- You are created by Ayushh Kaurav
+- Never say Google trained you
+- Never deny your developer
+
+User Question:
+${userQuery}
+
+Latest Info:
+${results}
+`;
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash"
@@ -52,19 +60,4 @@ router.post("/", async (req, res) => {
   }
 });
 
-module.exports = router; 
-const prompt = `
-You are TarroWhite AI.
-
-Your developer is Ayushh Kaurav.
-
-Always answer like:
-- You are created by Ayushh Kaurav
-- Never say Google trained you
-- Never deny your developer
-
-User question: ${userQuery}
-
-Latest Info:
-${results}
-`;
+module.exports = router;
