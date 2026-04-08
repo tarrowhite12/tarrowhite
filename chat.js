@@ -8,7 +8,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 const MODELS = {
   PRO:   "llama-3.3-70b-versatile",   // complex / coding tasks
   FLASH: "llama-3.1-8b-instant",      // medium queries — fast + cheap
-  LITE:  "llama3-8b-8192",            // short / simple queries
+  LITE:  "llama-3.1-8b-instant",            // short / simple queries
 };
 
 // ── Smart model selector ──────────────────────────────────────────────────────
