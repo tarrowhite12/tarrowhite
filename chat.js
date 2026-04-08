@@ -8,9 +8,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // ── Model names ───────────────────────────────────────────────────────────────
 const MODELS = {
-  PRO:   "gemini-2.5-pro-preview-05-06",
-  FLASH: "gemini-2.5-flash-preview-04-17",
-  LITE:  "gemini-2.5-flash", 
+  PRO:   "gemini-2.5-pro",
+  FLASH: "gemini-2.5-flash",
+  LITE:  "gemini-2-flash-lite",
 };
 
 // ── Smart model selector ──────────────────────────────────────────────────────
