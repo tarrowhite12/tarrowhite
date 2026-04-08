@@ -43,7 +43,7 @@ ${results}
 `;
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2-flash"
+      model: "gemini-3-flash"
     });
 
     const result = await model.generateContent({
