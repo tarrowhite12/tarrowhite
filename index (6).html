@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tarro white — AI Chat</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Image Generation Panel ─────────────────────────────────── */
+    .image-gen-panel {
+      border-top: 1px solid var(--border);
+      background: var(--bg-base);
+      flex-shrink: 0;
+    }
+
+    .image-gen-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      transition: color 0.2s;
+      text-align: left;
+    }
+
+    .image-gen-toggle:hover { color: var(--text-primary); }
+
+    .image-gen-toggle-icon  { font-size: 16px; }
+    .image-gen-toggle-label { flex: 1; font-weight: 500; }
+    .image-gen-toggle-chevron { font-size: 10px; opacity: 0.5; }
+
+    .image-gen-body {
+      padding: 0 24px 16px;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .image-gen-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .image-gen-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .image-gen-input:focus { border-color: rgba(245,158,11,0.4); }
+    .image-gen-input::placeholder { color: var(--text-muted); }
+
+    .image-gen-btn {
+      background: var(--accent, #f59e0b);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .image-gen-btn:hover    { background: #fbbf24; transform: scale(1.03); }
+    .image-gen-btn:active   { transform: scale(0.97); }
+    .image-gen-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .image-gen-result {
+      margin-top: 14px;
+    }
+
+    .image-gen-loading {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 0;
+    }
+
+    .image-gen-error {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #f87171;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+    }
+
+    .generated-img {
+      width: 100%;
+      max-width: 512px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: block;
+      margin-top: 4px;
+      animation: fadeUp 0.35s ease both;
+    }
+
+    .image-download-btn {
+      display: inline-block;
+      margin-top: 10px;
+      background: var(--bg-surface, #181818);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-size: 13px;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .image-download-btn:hover {
+      color: var(--accent, #f59e0b);
+      border-color: var(--accent, #f59e0b);
+    }
+
+    @media (max-width: 640px) {
+      .image-gen-body   { padding: 0 14px 14px; }
+      .image-gen-toggle { padding: 10px 14px; }
+    }
+    /* ── End Image Panel ─────────────────────────────────────── */
+  </style>
+</head>
+<body>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-mark">⬡</span>
+        <span class="logo-text">Tarrowhite</span>
+      </div>
+      <button class="icon-btn" id="sidebarToggle" title="Close sidebar">&#8592;</button>
+    </div>
+
+    <button class="new-chat-btn" id="newChatBtn">
+      <span class="btn-icon">+</span> New Chat
+    </button>
+
+    <nav class="chat-history" id="chatHistory">
+      <!-- Dynamically populated -->
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="theme-toggle" id="themeToggle">
+        <span id="themeIcon">☀</span>
+        <span id="themeLabel">Light mode</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────────── -->
+  <main class="main" id="main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="icon-btn" id="sidebarOpen" title="Open sidebar">☰</button>
+      <span class="model-badge" id="modelBadge">Auto AI</span>
+      <button class="icon-btn danger" id="clearBtn" title="Clear chat">⊘</button>
+    </header>
+
+    <!-- Chat messages -->
+    <section class="chat-area" id="chatArea">
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">⬡</div>
+        <h1>Good to see you.</h1>
+        <p>Ask me anything — code, ideas, analysis, or just a chat.</p>
+        <div class="suggestion-pills">
+          <button class="pill" data-text="Explain quantum entanglement simply">Explain quantum entanglement</button>
+          <button class="pill" data-text="Write a Python function to flatten a nested list">Flatten a nested list in Python</button>
+          <button class="pill" data-text="Give me 5 creative startup ideas for 2025">Startup ideas for 2025</button>
+          <button class="pill" data-text="What are the key differences between React and Vue?">React vs Vue</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Input area -->
+    <footer class="input-area">
+      <div class="input-box">
+        <textarea
+          id="userInput"
+          placeholder="Message Aether…"
+          rows="1"
+          autocomplete="off"
+          spellcheck="true"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" title="Send (Enter)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <p class="disclaimer">AI can make mistakes. Verify important information.</p>
+    </footer>
+
+    <!-- ── Image Generation Panel ───────────────────────────────── -->
+    <div class="image-gen-panel" id="imageGenPanel">
+
+      <!-- Toggle header — click to expand/collapse -->
+      <button class="image-gen-toggle" id="imageGenToggle" title="Toggle Image Generator">
+        <span class="image-gen-toggle-icon">🎨</span>
+        <span class="image-gen-toggle-label">Image Generator</span>
+        <span class="image-gen-toggle-chevron" id="imageGenChevron">▲</span>
+      </button>
+
+      <!-- Collapsible body -->
+      <div class="image-gen-body" id="imageGenBody">
+        <div class="image-gen-input-row">
+          <input
+            type="text"
+            id="imagePromptInput"
+            class="image-gen-input"
+            placeholder="Describe the image you want…"
+            autocomplete="off"
+          />
+          <button class="image-gen-btn" id="imageGenBtn">Generate</button>
+        </div>
+
+        <!-- Status / result area -->
+        <div class="image-gen-result" id="imageGenResult" style="display:none;">
+          <div class="image-gen-loading" id="imageGenLoading" style="display:none;">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <span style="margin-left:8px;font-size:13px;color:var(--text-secondary)">Generating image…</span>
+          </div>
+          <div class="image-gen-error" id="imageGenError" style="display:none;"></div>
+          <img
+            id="generatedImage"
+            class="generated-img"
+            alt="Generated image"
+            style="display:none;"
+          />
+          <a id="imageDownloadLink" class="image-download-btn" download="tarrowhite-image.png" style="display:none;">
+            ⬇ Download
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <!-- ── End Image Generation Panel ─────────────────────────── -->
+
+  </main>
+
+  <script src="app.js"></script>
+
+  <!-- ── Image Generation Logic ─────────────────────────────────────────── -->
+  <script>
+    (function () {
+      const panel        = document.getElementById("imageGenPanel");
+      const toggleBtn    = document.getElementById("imageGenToggle");
+      const body         = document.getElementById("imageGenBody");
+      const chevron      = document.getElementById("imageGenChevron");
+      const promptInput  = document.getElementById("imagePromptInput");
+      const genBtn       = document.getElementById("imageGenBtn");
+      const resultArea   = document.getElementById("imageGenResult");
+      const loadingEl    = document.getElementById("imageGenLoading");
+      const errorEl      = document.getElementById("imageGenError");
+      const imgEl        = document.getElementById("generatedImage");
+      const downloadLink = document.getElementById("imageDownloadLink");
+
+      // ── Collapse / expand ─────────────────────────────────────
+      let collapsed = false;
+      toggleBtn.addEventListener("click", () => {
+        collapsed = !collapsed;
+        body.style.display    = collapsed ? "none" : "block";
+        chevron.textContent   = collapsed ? "▼" : "▲";
+      });
+
+      // ── Helpers ───────────────────────────────────────────────
+      function showLoading() {
+        resultArea.style.display  = "block";
+        loadingEl.style.display   = "flex";
+        errorEl.style.display     = "none";
+        imgEl.style.display       = "none";
+        downloadLink.style.display = "none";
+        errorEl.textContent       = "";
+      }
+
+      function showError(msg) {
+        loadingEl.style.display    = "none";
+        errorEl.style.display      = "block";
+        errorEl.textContent        = "⚠ " + msg;
+        imgEl.style.display        = "none";
+        downloadLink.style.display = "none";
+      }
+
+      function showImage(base64, mimeType) {
+        const src = `data:${mimeType};base64,${base64}`;
+        imgEl.src                  = src;
+        imgEl.style.display        = "block";
+        loadingEl.style.display    = "none";
+        errorEl.style.display      = "none";
+        downloadLink.href          = src;
+        downloadLink.style.display = "inline-block";
+      }
+
+      // ── Generate ──────────────────────────────────────────────
+      async function generateImage() {
+        const prompt = promptInput.value.trim();
+        if (!prompt) {
+          promptInput.focus();
+          return;
+        }
+
+        genBtn.disabled   = true;
+        genBtn.textContent = "Generating…";
+        showLoading();
+
+        try {
+          const response = await fetch("/generate-image", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ prompt }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok || data.error) {
+            showError(data.error || "Image generation failed. Please try again.");
+          } else {
+            showImage(data.imageData, data.mimeType || "image/png");
+          }
+
+        } catch (err) {
+          showError(
+            err.name === "TypeError"
+              ? "Cannot reach the server. Make sure it's running."
+              : "Network error. Check your connection."
+          );
+        } finally {
+          genBtn.disabled    = false;
+          genBtn.textContent = "Generate";
+        }
+      }
+
+      genBtn.addEventListener("click", generateImage);
+      promptInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); generateImage(); }
+      });
+    })();
+  </script>
+  <!-- ── End Image Generation Logic ─────────────────────────── -->
+</html>
